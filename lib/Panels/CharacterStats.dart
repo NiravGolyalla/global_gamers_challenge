@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
+import '../my_app_state.dart';
+import '../my_app_state.dart';
 
 class CharacterStats extends StatelessWidget {
-  const CharacterStats({
-    super.key,
-  });
+  const CharacterStats({super.key,});
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
@@ -35,8 +36,10 @@ class CharacterStats extends StatelessWidget {
                         child: LinearProgressIndicator(value: percent)),
                   ],
                 ),
+                ElevatedButton(onPressed: () {GoRouter.of(context).go('/home');}, child: Text("Next"))
               ],
-            )
+            ),
+            
           ],
         ),
       ),

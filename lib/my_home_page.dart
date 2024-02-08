@@ -4,6 +4,7 @@ import 'package:global_gamers_challenge/panels/CharacterStats.dart';
 import 'package:global_gamers_challenge/panels/MissionTab.dart';
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key,});
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
