@@ -16,7 +16,7 @@ class MyAppState extends ChangeNotifier {
   var rng = Random();
 
   MyAppState() {
-    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 6), (timer) {
       var mission = createMission();
       activeMissions.add(mission);
       notifyListeners();
@@ -40,7 +40,7 @@ class MyAppState extends ChangeNotifier {
 
   Mission createMission() {
     int expReward = rng.nextInt(51) + 50;
-    int coinReward = rng.nextInt(11);
+    int coinReward = rng.nextInt(10) + 1;
     
     return Mission('Mission', expReward, coinReward);
   }

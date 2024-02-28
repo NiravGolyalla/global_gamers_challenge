@@ -1,9 +1,14 @@
+import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:global_gamers_challenge/src/gameone.dart';
+import 'package:global_gamers_challenge/show_games.dart';
 
 import 'my_home_page.dart';
+
+final game = GameOne();
 
 final router = GoRouter(
   initialLocation: '/',
@@ -24,7 +29,7 @@ final router = GoRouter(
       routes: [
         GoRoute(
           path: 'home',
-          builder: (context, state) => const Placeholder(key: Key('home')),
+          builder: (context, state) => ShowGames(key: Key('home')),
         ),
         GoRoute(
           path: 'settings',

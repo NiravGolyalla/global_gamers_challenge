@@ -36,7 +36,6 @@ class CharacterStats extends StatelessWidget {
                         child: LinearProgressIndicator(value: percent)),
                   ],
                 ),
-                ElevatedButton(onPressed: () {GoRouter.of(context).go('/home');}, child: Text("Next"))
               ],
             ),
             

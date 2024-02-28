@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../main.dart';
 import '../my_app_state.dart';
 
@@ -21,6 +22,7 @@ class _MissionTabState extends State<MissionTab> {
               child: ElevatedButton(
                 child: Text(appState.activeMissions.elementAt(index).toString()),
                 onPressed: () {
+                  GoRouter.of(context).go('/home');
                   appState.completeMission(appState.activeMissions.elementAt(index));
                 },
               ),
