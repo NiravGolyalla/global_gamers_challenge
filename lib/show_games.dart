@@ -4,39 +4,56 @@ import 'package:flame/game.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:async';
 
-class ShowGames extends StatelessWidget {
+class ShowGames extends StatefulWidget {
   ShowGames({super.key});
-  late Timer timer;
-  late var game;
-  @override
-  Widget build(BuildContext context) {
-    timer = Timer(const Duration(seconds: 5), () {
-      GoRouter.of(context).go('/');
-    });
-    game = GameOne.new;
 
+  @override
+  State<ShowGames> createState() => _ShowGamesState();
+}
+
+class _ShowGamesState extends State<ShowGames> with TickerProviderStateMixin{
+  late Timer timer;
+  final int timeLimit = 10;
+
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: timeLimit),
+    )..addListener((){setState((){});});
+    controller.repeat(reverse: false);
+    super.initState();
+  }
+  
+  @override
+  void dispose() {
+    timer.cancel();
+    controller.dispose();
+    super.dispose();
+  }
+
+
+  Widget build(BuildContext context) {
+    timer = Timer(Duration(seconds: timeLimit), () {
+      if(mounted){
+        GoRouter.of(context).go('/');
+      }
+    });
 
     return Container(
       color: Colors.white,
-      // padding: EdgeInsets.all(20),
-      child: 
-      
-      Stack(
+      child: Column(
         children: [
-          GameWidget.controlled(
-              gameFactory: game,
-              ), 
-              SizedBox(height:10, width:double.infinity, child: LinearProgressIndicator(value:.5)),
-        ]
-      ),
-      
-      
-      // Column(
-      //   children: [
-      //     // SizedBox.e()
-          
-      //   ],
-      // ),
+        SizedBox(
+            height: 10,
+            width: double.infinity,
+            child: LinearProgressIndicator(value: controller.value)),
+        Spacer(),
+        GameOne(),
+        Spacer(),
+      ]),
     );
   }
 }
