@@ -16,10 +16,18 @@ class MyAppState extends ChangeNotifier {
   var rng = Random();
 
   MyAppState() {
+    startTimer();
+  }
+
+
+  void startTimer(){
     _timer = Timer.periodic(Duration(seconds: 6), (timer) {
-      var mission = createMission();
-      activeMissions.add(mission);
-      notifyListeners();
+      print(activeMissions.length);
+      if(activeMissions.length < 10){
+        var mission = createMission();
+        activeMissions.add(mission);
+        notifyListeners();
+      }
     });
   }
 
@@ -46,6 +54,10 @@ class MyAppState extends ChangeNotifier {
   }
 
   void completeMission(Mission entry) {
+    if (activeMissions.length < 10) {
+      _timer.cancel();
+      startTimer();
+    }
     gainEXP(entry.expReward);
     gainCoins(entry.coinReward);
     activeMissions.remove(entry);

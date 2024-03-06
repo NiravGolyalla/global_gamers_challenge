@@ -14,6 +14,7 @@ class ShowGames extends StatefulWidget {
 class _ShowGamesState extends State<ShowGames> with TickerProviderStateMixin{
   late Timer timer;
   final int timeLimit = 10;
+  int score = 0;
 
   late AnimationController controller;
 
@@ -34,6 +35,12 @@ class _ShowGamesState extends State<ShowGames> with TickerProviderStateMixin{
     super.dispose();
   }
 
+  void increaseScore(int _score){
+    setState(() {
+      score += _score; 
+    });
+  }
+
 
   Widget build(BuildContext context) {
     timer = Timer(Duration(seconds: timeLimit), () {
@@ -51,8 +58,12 @@ class _ShowGamesState extends State<ShowGames> with TickerProviderStateMixin{
             width: double.infinity,
             child: LinearProgressIndicator(value: controller.value)),
         Spacer(),
-        GameOne(),
+        GameOne(increaseScore: increaseScore,),
         Spacer(),
+        SizedBox(
+            height: 10,
+            width: double.infinity,
+            child: LinearProgressIndicator(value: score/5)),
       ]),
     );
   }

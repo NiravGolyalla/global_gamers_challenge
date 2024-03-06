@@ -6,12 +6,33 @@ import 'config.dart';
 import 'dart:math';
 import 'package:flutter/rendering.dart';
 
+import 'drag_icon.dart';
+
 class GameOne extends StatefulWidget {
+  final void Function(int score) increaseScore;
+  GameOne({required this.increaseScore});
+
   @override
   _GameOneState createState() => _GameOneState();
 }
 
 class _GameOneState extends State<GameOne> {
+  final List<String> tags = ["trash", "recycle"];
+  late String _tag;
+  late int _icon;
+
+  @override
+  void initState() {
+    randomizeTag();
+    super.initState();
+  }
+
+  void randomizeTag() {
+    setState(() {
+      _tag = tags[Random().nextInt(2)];
+      _icon = Random().nextInt(2);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -23,15 +44,10 @@ class _GameOneState extends State<GameOne> {
           children: [
           Row( mainAxisAlignment: MainAxisAlignment.center,
             children: [
-            DropBox(),
-            DropBox()
+            DropBox(parameter: "trash", increaseScore: widget.increaseScore,randomizeTag: randomizeTag,),
+            DropBox(parameter: "recycle",increaseScore: widget.increaseScore, randomizeTag: randomizeTag,),
           ],),
-          Draggable<String>(
-            data: "item",
-            child: Icon(Icons.delete), // Add the missing argument specifying a trash icon
-            feedback: Icon(Icons.delete),
-            childWhenDragging: Icon(null),
-          )
+          DragIcon(tag: _tag,icon: _icon,)
         ]
       ),
     );

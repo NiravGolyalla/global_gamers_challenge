@@ -8,8 +8,6 @@ import 'package:global_gamers_challenge/show_games.dart';
 
 import 'my_home_page.dart';
 
-final game = GameOne();
-
 final router = GoRouter(
   initialLocation: '/',
   errorPageBuilder: (context, state) {
