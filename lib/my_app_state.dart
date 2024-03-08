@@ -2,27 +2,52 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'main.dart';
 
 class MyAppState extends ChangeNotifier {
-  int experience = 0;
-  int experienceMax = 100;
-  int growth = 10;
+  int experience = database.getInt('experience') ?? 0;
   int scale = 2;
-  int level = 0;
-  int coins = 0;
+  int level = database.getInt('level') ?? 0;
+  int coins = database.getInt('coins') ?? 0;
+  List<Armor> armors = [];
+  
+  
+  late int experienceMax;
 
   final LinkedList<Mission> activeMissions = LinkedList<Mission>();
   late Timer _timer;
   var rng = Random();
 
+  Future<void> generateArmors() async{
+    List<String> armorNames = [
+      'chest1',
+      'chest2',
+      'chest3',
+      "boots1",
+      "boots2",
+      "boots3",
+    ];
+    
+    for (int i = 0; i < armorNames.length; i++) {
+      Armor armor = Armor(
+        id: i,
+        name: armorNames[i],
+        lvl: await database.getInt('${armorNames[i]}lvl') ?? 0,
+      );
+      armors.add(armor);
+    }
+    print(armors);
+  }
+
   MyAppState() {
     startTimer();
+    generateArmors();
+    experienceMax = 100 * pow(scale, level).toInt();
   }
 
 
   void startTimer(){
     _timer = Timer.periodic(Duration(seconds: 6), (timer) {
-      print(activeMissions.length);
       if(activeMissions.length < 10){
         var mission = createMission();
         activeMissions.add(mission);
@@ -39,6 +64,19 @@ class MyAppState extends ChangeNotifier {
       experienceMax *= scale;
     }
     notifyListeners();
+  }
+
+  Future<void> upgradeArmor(int index) async {
+    if (armors[index].lvl < 5) {
+      armors[index].lvl += 1;
+      await database.setInt("${armors[index].name}lvl", armors[index].lvl);
+    }
+    notifyListeners();
+  }
+
+  Future<void> save() async {
+    await database.setInt('experience', experience);
+    await database.setInt('level', level);
   }
 
   void gainCoins(int value) {
@@ -61,6 +99,7 @@ class MyAppState extends ChangeNotifier {
     gainEXP(entry.expReward);
     gainCoins(entry.coinReward);
     activeMissions.remove(entry);
+    save();
     notifyListeners();
   }
 }
@@ -77,5 +116,16 @@ final class Mission extends LinkedListEntry<Mission> {
   Mission(this.name, this.expReward, this.coinReward); 
 }
 
+class Armor {
+  final int id;
+  final String name;
+  int lvl;
 
+  Armor({required this.id , required this.name, required this.lvl});
+
+  @override
+  String toString() {
+    return 'Armor: $name, Lvl: $lvl';
+  }
+}
 

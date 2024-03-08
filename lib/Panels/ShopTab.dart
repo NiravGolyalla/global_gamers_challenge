@@ -4,27 +4,29 @@ import 'package:go_router/go_router.dart';
 import '../main.dart';
 import '../my_app_state.dart';
 
-class MissionTab extends StatefulWidget {
+class ShopTab extends StatefulWidget {
   @override
-  State<MissionTab> createState() => _MissionTabState();
+  State<ShopTab> createState() => _ShopTabState();
 }
 
-class _MissionTabState extends State<MissionTab> {
+class _ShopTabState extends State<ShopTab> {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     return Expanded(
       child: ListView.builder(
-          itemCount: appState.activeMissions.length,
+          itemCount: appState.armors.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                child: Text(appState.activeMissions.elementAt(index).toString()),
-                onPressed: () {
-                  GoRouter.of(context).go('/home');
-                  appState.completeMission(appState.activeMissions.elementAt(index));
-                },
+              child: FractionallySizedBox(
+                widthFactor: 2/3,
+                child: ElevatedButton(
+                  child: Text("Upgrade ${appState.armors.elementAt(index).toString()}"),
+                  onPressed: () {
+                    appState.upgradeArmor(index);
+                  },
+                ),
               ),
             );
           }),

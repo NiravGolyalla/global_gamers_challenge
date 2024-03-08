@@ -19,12 +19,15 @@ class _MissionTabState extends State<MissionTab> {
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                child: Text(appState.activeMissions.elementAt(index).toString()),
-                onPressed: () {
-                  GoRouter.of(context).go('/home');
-                  appState.completeMission(appState.activeMissions.elementAt(index));
-                },
+              child: FractionallySizedBox(
+                widthFactor: 2/3,
+                child: ElevatedButton(
+                  child: Text(appState.activeMissions.elementAt(index).toString()),
+                  onPressed: () {
+                    GoRouter.of(context).go('/home');
+                    appState.completeMission(appState.activeMissions.elementAt(index));
+                  },
+                ),
               ),
             );
           }),
