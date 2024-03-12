@@ -27,7 +27,23 @@ final router = GoRouter(
       routes: [
         GoRoute(
           path: 'home',
-          builder: (context, state) => ShowGames(key: Key('home')),
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return CustomTransitionPage(
+              key: state.pageKey,
+              child: ShowGames(key: Key('home')),
+              transitionDuration: const Duration(milliseconds: 150),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+              SlideTransition(
+                  position: animation.drive(
+                    Tween<Offset>(
+                      begin: const Offset(1, 0),
+                      end: Offset.zero,
+                    ).chain(CurveTween(curve: Curves.easeIn)),
+                  ),
+                  child: child),
+                );
+          },
+          // builder: (context, state) => ShowGames(key: Key('home')),
         ),
         GoRoute(
           path: 'settings',

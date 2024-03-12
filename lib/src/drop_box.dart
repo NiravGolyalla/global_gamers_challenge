@@ -19,12 +19,7 @@ class _DropBoxState extends State<DropBox> {
         padding: const EdgeInsets.all(8.0),
         child: DragTarget<String>(
           builder: (context, candidateData, rejectedData) => 
-          Container(
-            height: 100,
-            width: 100,
-            color: Colors.blue,
-            child: Center(child: Text(widget.parameter)),
-          ),
+          SizedBox(height: 100, width: 100,child: Image.asset("assets/images/${widget.parameter}.png", fit: BoxFit.cover,)),
           onWillAccept: (data) {
             return data == widget.parameter;
           },

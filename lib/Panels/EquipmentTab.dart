@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../main.dart';
@@ -21,14 +23,14 @@ class _EquipmentTabState extends State<EquipmentTab> {
             Header(
               text: "Equipment:",
             ),
+            Text("Chest:"),
             EquipmentRow(
               id: 0,
             ),
+            Text("Boots:"),
             EquipmentRow(
               id: 1,
             ),
-            Header(text: "Inventory:"),
-            Grid(),
           ],
         ),
       ),
@@ -45,43 +47,20 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/page.png"),
+          fit: BoxFit.cover,
+        ),
       ),
-    );
-  }
-}
-
-class Grid extends StatelessWidget {
-  const Grid({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InventoryRow(),
-        InventoryRow(),
-        InventoryRow(),
-      ],
-    );
-  }
-}
-
-class InventoryRow extends StatelessWidget {
-  const InventoryRow({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [],
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }
@@ -98,83 +77,146 @@ class EquipmentRow extends StatefulWidget {
 }
 
 class _EquipmentRowState extends State<EquipmentRow> {
-  var selectedIndex = 0;
+  late int selectedIndex;
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      ArmorBox(id: 1),
-      Container(
+    var appState = context.watch<MyAppState>();
+    selectedIndex =
+        database.getInt(['equipedchest', 'equipedboots'][widget.id]) ?? 6;
+    return Row(mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.start, children: [
+      EquipedDisplay(id: selectedIndex),
+      SizedBox(
         height: 100,
         width: 50,
       ),
       Row(
-          children: List.generate(3, (index) {
-        return GestureDetector(
-            child: ArmorBox(id: index + 3 * widget.id),
-            onTap: () => {
-                  setState(() {
-                    selectedIndex = index;
-                  })
-                });
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(3, (index) {
+        return Column(
+          children: [
+            GestureDetector(
+                child: ArmorBox(id: index + 3 * widget.id, width: 100, height: 100),
+                onTap: () => {
+                      setState(() {
+                        selectedIndex = index + 3 * widget.id;
+                        appState.updateEquiped(widget.id, selectedIndex);
+                        // print(selectedIndex);
+                      })
+                    }),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // Set the background color to white
+                ),
+                width: 100,
+                height : 70,
+                child: Text(
+                  appState.armors[index + 3 * widget.id].effect,
+                  style: TextStyle(fontSize: 10),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+          ],
+        );
       }))
     ]);
   }
 }
 
-class ArmorBox extends StatefulWidget {
-  int id;
+class ArmorBox extends StatelessWidget {
+  final int id;
+  final double width;
+  final double height;
 
   ArmorBox({
     super.key,
     required this.id,
+    required this.width,
+    required this.height,
   });
 
   @override
-  State<ArmorBox> createState() => _ArmorBoxState();
-}
-
-class _ArmorBoxState extends State<ArmorBox> {
-  @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    return Stack(alignment: Alignment.center, children: [
-      SizedBox(
-        height: 100,
-        width: 100,
-        child: FittedBox(
-            fit: BoxFit.fill,
-            child: Image.asset(
-                'assets/images/armor/${"chest1"}${appState.armors[widget.id].lvl}.png')),
-        // fit: BoxFit.fill, child: Image.asset('assets/images/armor/${appState.armors[id].name}${appState.armors[id].lvl}.png')),
-      ),
-      Text(appState.armors[widget.id].lvl.toString()),
-    ]);
+    return Column(
+      children: [
+        Stack(alignment: Alignment.topRight, children: [
+          SizedBox(
+            height: height,
+            width: width,
+            child: FittedBox(
+                fit: BoxFit.fill,
+                child: Image.asset('assets/images/armor/background.png')),
+          ),
+          SizedBox(
+            height: height,
+            width: width,
+            child: FittedBox(
+                fit: BoxFit.fill,
+                child: Image.asset(
+                    'assets/images/armor/${appState.armors[id].name}.png')),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(height: height/5, width: width/5, child: TierBox(id: appState.armors[id].lvl)),
+          ),
+        ]),
+      ],
+    );
   }
 }
 
-class EquipedDisplay extends StatefulWidget {
-  int id;
+class EquipedDisplay extends StatelessWidget {
+  final int id;
   EquipedDisplay({
     required this.id,
     super.key,
   });
 
   @override
-  State<EquipedDisplay> createState() => _EquipedDisplayState();
-}
-
-class _EquipedDisplayState extends State<EquipedDisplay> {
-  @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    return SizedBox(
+    return Stack(alignment: Alignment.topRight, children: [
+      SizedBox(
         height: 100,
         width: 100,
         child: FittedBox(
             fit: BoxFit.fill,
-            child: Image.asset(widget.id < 3 ? 'assets/images/armor/${"chest1"}${appState.armors[widget.id].lvl}.png' : 'assets/images/box.png') 
-        )
-        // fit: BoxFit.fill, child: Image.asset('assets/images/armor/${appState.armors[id].name}${appState.armors[id].lvl}.png')),
-      );
+            child: Image.asset('assets/images/armor/background.png')),
+      ),
+      SizedBox(
+          height: 100,
+          width: 100,
+          child: FittedBox(
+              fit: BoxFit.fill,
+              child: Image.asset(id < 6
+                  ? 'assets/images/armor/${appState.armors[id].name}.png'
+                  : 'assets/images/armor/background.png'))),
+      Builder(
+        builder: (context) {
+          if (id < 6){
+            return Padding(padding: const EdgeInsets.all(8.0),child: SizedBox(height: 20, width: 20, child: TierBox(id: appState.armors[id].lvl)));
+          }
+          return SizedBox(height: 20, width: 20);   
+        },
+      ),
+      
+        
+      
+    ]);
+  }
+}
+
+class TierBox extends StatelessWidget {
+  final int id;
+  const TierBox({
+    super.key,
+    required this.id,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    List<String> tiers = ['f', 'd', 'c', 'b', 'a', 's'];
+    return FittedBox(
+        fit: BoxFit.fill, child: Image.asset('assets/images/tier/${tiers[id]}.png'));
   }
 }

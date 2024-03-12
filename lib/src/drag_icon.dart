@@ -11,23 +11,25 @@ class DragIcon extends StatefulWidget {
 }
 
 class _DragIconState extends State<DragIcon> {
-  final List<IconData> itemsTrash = [Icons.delete, Icons.close];
-  final List<IconData> itemsRecycle = [Icons.add, Icons.open_in_browser];
-  late Icon data;
+  final List<String> itemsTrash = ["trashbag", "glass"];
+  final List<String> itemsRecycle = ["cardboard", "plastic"];
+  late Widget data;
+  double width = 40;
+  double height = 40;
   var rng = Random();
 
   @override
   Widget build(BuildContext context) {
     if (widget.tag == "trash") {
-        data = Icon(itemsTrash[widget.icon]);
+        data = SizedBox(height: height, width: width,child: Image.asset("assets/images/${itemsTrash[widget.icon]}.png", fit: BoxFit.cover,));
       } else {
-        data = Icon(itemsRecycle[widget.icon]);
+        data = SizedBox(height: height, width: width,child: Image.asset("assets/images/${itemsRecycle[widget.icon]}.png", fit: BoxFit.cover,));
     }
     return Draggable<String>(
         data: widget.tag,
         child: data,
         feedback: data,
-        childWhenDragging: Icon(null),
+        childWhenDragging: SizedBox(height: height, width: width,child: Image.asset("assets/images/empty.png", fit: BoxFit.cover,)),
       );
 
   }

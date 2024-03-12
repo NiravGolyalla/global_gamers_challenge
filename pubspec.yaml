@@ -18,6 +18,10 @@ dependencies:
   go_router: ^13.1.0
   shared_preferences: ^2.2.2
   window_manager: ^0.3.8
+  google_fonts: ^6.2.0
+  page_transition: "^2.1.0"
+  flutter_animate: ^4.5.0
+
 
 dev_dependencies:
   flutter_test:
@@ -28,3 +32,4 @@ flutter:
   assets:
     - assets/images/
     - assets/images/armor/
+    - assets/images/tier/

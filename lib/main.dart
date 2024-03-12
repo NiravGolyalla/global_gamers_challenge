@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-
+import 'package:google_fonts/google_fonts.dart';
 import "Panels/MissionTab.dart";
 import "Panels/CharacterStats.dart";
 import 'dart:collection';
@@ -28,8 +28,9 @@ void main() async {
 
   WindowOptions windowOptions = const WindowOptions(
     minimumSize: Size(500, 800),
-    size: Size(500, 800),
+    size: Size(500, 800),  
   );
+  windowManager.setAspectRatio(5/8);
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
@@ -55,9 +56,10 @@ class MyApp extends StatelessWidget {
         ],
         child: Builder(builder: (context) {
           return MaterialApp.router(
-            title: 'Environmental Guild',
+            title: 'Eco Guild',
             theme: ThemeData(
               useMaterial3: true,
+              textTheme: GoogleFonts.pressStart2pTextTheme(Theme.of(context).textTheme),
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
             ),
             routerDelegate: router.routerDelegate,
