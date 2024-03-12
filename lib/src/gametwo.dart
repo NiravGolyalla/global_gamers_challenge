@@ -18,32 +18,32 @@ class GameTwo extends StatefulWidget {
 }
 
 class _GameTwoState extends State<GameTwo> {
-  List<bool> randomBools = List.generate(25, (index) => Random().nextInt(10) > 5);
-  
+  List<bool> randomBools =
+      List.generate(25, (index) => Random().nextInt(10) > 5);
+
   @override
   Widget build(BuildContext context) {
     int total = randomBools.where((element) => true).length;
     return Column(
       children: [
-        Text("Turn Off All Lights!", style: TextStyle(decoration: TextDecoration.none),),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
-              width: 1,
-            ),
-          ),
-          child: Expanded(
-            child: 
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 5,
-              children: List.generate(25, (index) {
-                return Switch(on: randomBools[index],increaseScore: widget.increaseScore,);
-              }),
-            )
-          ),
+        Text(
+          "Turn Off All Lights!",
+          style: TextStyle(decoration: TextDecoration.none),
         ),
+        Column(
+          children: List.generate(5, (index1) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(5, (index) {
+                return Switch(
+                  on: randomBools[index],
+                  increaseScore: widget.increaseScore,
+                );
+              }),
+            );
+          }
+          ),
+        )
       ],
     );
   }
@@ -62,7 +62,20 @@ class _SwitchState extends State<Switch> {
   bool currState = true;
   @override
   Widget build(BuildContext context) {
-    
-    return GestureDetector(onTap: (){if(currState == true){widget.increaseScore(1); currState = false;}}, child: Image(image: AssetImage(widget.on && currState ? "assets/images/on.png" : "assets/images/off.png")));
+    return SizedBox(
+      width: 50,
+      height: 80,
+      child: GestureDetector(
+          onTap: () {
+            if (currState == true) {
+              widget.increaseScore(1);
+              currState = false;
+            }
+          },
+          child: Image(
+              image: AssetImage(widget.on && currState
+                  ? "assets/images/on.png"
+                  : "assets/images/off.png"))),
+    );
   }
 }
